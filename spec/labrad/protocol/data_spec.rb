@@ -5,7 +5,7 @@ describe LabRAD::Protocol::Data do
     it 'raises PackError for invalid arguments' do
       packer = LabRAD::Protocol::Data.new('s')
 
-      expect { packer.pack(nil) }.to raise_error(LabRAD::Protocol::PackError)
+      expect { packer.pack(nil) }.to raise_error(LabRAD::PackError)
     end
 
     it 'packs boolean' do
@@ -153,7 +153,7 @@ describe LabRAD::Protocol::Data do
     it 'raises UnpackError for invalid arguments' do
       packer = LabRAD::Protocol::Data.new('s')
 
-      expect { packer.unpack('') }.to raise_error(LabRAD::Protocol::UnpackError)
+      expect { packer.unpack('') }.to raise_error(LabRAD::UnpackError)
     end
 
     it 'unpacks boolean' do

@@ -1,8 +1,8 @@
 # rubocop:disable Style/Documentation
 
-require 'labrad/protocol/errors'
 require 'labrad/protocol/packer'
 require 'labrad/protocol/unpacker'
+require 'labrad/errors'
 
 module LabRAD
   module Protocol
@@ -24,7 +24,7 @@ module LabRAD
             element, value = item
             send("pack_#{resolve(element)}", element, value)
           rescue
-            raise PackError, "Can't pack '#{@pattern}' using #{values.inspect}"
+            raise LabRAD::PackError, "Can't pack '#{@pattern}' using #{values.inspect}"
           end
         end.join
       end
@@ -38,7 +38,7 @@ module LabRAD
             pointer += size
             value
           rescue
-            raise UnpackError,
+            raise LabRAD::UnpackError,
                   "Can't unpack '#{string.inspect}' using '#{@pattern}'"
           end
         end
