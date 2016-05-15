@@ -5,6 +5,8 @@ require 'labrad/protocol/data'
 module LabRAD
   module Protocol
     class Record
+      RECORD_DATA = Data.new('w s s')
+
       attr_reader :type
       attr_accessor :setting, :data
 
@@ -36,9 +38,7 @@ module LabRAD
       end
 
       def self.from_s(string)
-        labrad_data = Data.new('w s s')
-
-        setting, type, data = labrad_data.unpack(string)
+        setting, type, data = RECORD_DATA.unpack(string)
         type_labrad_data = Data.new(type)
         data = type_labrad_data.unpack(data).first
 
@@ -47,10 +47,9 @@ module LabRAD
 
       def self.many_from_s(string)
         records = []
-        labrad_data = Data.new('w s s')
         pointer = 0
         while pointer < string.length
-          size, = labrad_data.unpack(string[pointer..-1], with_size: true)
+          size, = RECORD_DATA.unpack(string[pointer..-1], with_size: true)
           s = string[pointer..pointer + size]
           records << Record.from_s(s)
 
