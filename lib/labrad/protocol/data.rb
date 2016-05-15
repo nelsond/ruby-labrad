@@ -24,7 +24,8 @@ module LabRAD
             element, value = item
             send("pack_#{resolve(element)}", element, value)
           rescue
-            raise LabRAD::PackError, "Can't pack '#{@pattern}' using #{values.inspect}"
+            raise LabRAD::PackError,
+                  "Can't pack '#{@pattern}' using #{values.inspect}"
           end
         end.join
       end
