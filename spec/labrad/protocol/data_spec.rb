@@ -94,6 +94,16 @@ describe LabRAD::Protocol::Data do
       expect(result).to eq(expected_result)
     end
 
+    it 'packs cluster array' do
+      packer = LabRAD::Protocol::Data.new('*(iv)')
+      array = [[1, 2.34], [5, 6.78]]
+
+      result = packer.pack(array)
+      expected_result = [2, *array.flatten].pack('lldld')
+
+      expect(result).to eq(expected_result)
+    end
+
     it 'packs n-dimensional array' do
       packer = LabRAD::Protocol::Data.new('*3i')
       array = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
@@ -207,6 +217,14 @@ describe LabRAD::Protocol::Data do
       packer = LabRAD::Protocol::Data.new('*v')
       array = [1.9, 2.8, 3.7, 4.6, 5.5, 6.4, 7.3, 8.2, 9.1]
       result = packer.unpack([9, *array].pack('ld9'))
+
+      expect(result).to eq([array])
+    end
+
+    it 'unpacks cluster array' do
+      packer = LabRAD::Protocol::Data.new('*(iv)')
+      array = [[1, 2.34], [5, 6.78]]
+      result = packer.unpack([2, *array.flatten].pack('lldld'))
 
       expect(result).to eq([array])
     end

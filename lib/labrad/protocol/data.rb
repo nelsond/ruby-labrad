@@ -14,9 +14,9 @@ module LabRAD
 
           begin
             case element
-            when /^\*[0-9]+/
+            when /^\*[0-9]+[a-z]/
               pack_narray(element, value)
-            when /^\*[a-z]$/
+            when /^\*/
               pack_array(element, value)
             when /^\(.*\)$/
               pack_cluster(element, value)
@@ -38,9 +38,9 @@ module LabRAD
 
           begin
             case element
-            when /^\*[0-9]+/
+            when /^\*[0-9]+[a-z]/
               size, value = unpack_narray(element, remaining_string)
-            when /^\*[a-z]$/
+            when /^\*/
               size, value = unpack_array(element, remaining_string)
             when /^\(.*\)$/
               size, value = unpack_cluster(element, remaining_string)
@@ -62,7 +62,7 @@ module LabRAD
 
       def pattern_elements
         base_regexp = '\*?[0-9]*[biwsvctE]'
-        @pattern.scan(/(#{base_regexp}|\((?:#{base_regexp})+\))/).flatten
+        @pattern.scan(/(#{base_regexp}|\*?[0-9]*\((?:#{base_regexp})+\))/).flatten
       end
 
       def pack_element(element, value)
@@ -92,16 +92,15 @@ module LabRAD
       end
 
       def pack_array(element, array)
-        element = element[-1]
-        length = pack_element('i', array.length)
+        pattern = element[1..-1]
+        data = self.class.new(pattern)
 
-        length + array.map { |v| pack_element(element, v) }.join
+        length = pack_element('i', array.length)
+        length + array.map{|v| data.pack(v) }.join
       end
 
       def pack_narray(element, array)
         dimension = element[1].to_i
-        element = element[-1]
-
         a = array
         lengths = []
         dimension.times do
@@ -109,7 +108,10 @@ module LabRAD
           a = a.first
         end
 
-        lengths.join + array.flatten.map { |v| pack_element(element, v) }.join
+        pattern = element[2..-1]
+        data = self.class.new(pattern)
+
+        lengths.join + array.flatten.map { |v| data.pack(v) }.join
       end
 
       def pack_cluster(elements, cluster)
@@ -159,11 +161,13 @@ module LabRAD
       end
 
       def unpack_array(element, string)
-        element = element[-1]
         length_size, length = unpack_element('i', string)
-
         range = length_size..-1
-        unpack_elements(element * length, string[range])
+
+        pattern = element[1..-1]
+        data = self.class.new(pattern*length)
+
+        data.unpack(string[range], with_size: true)
       end
 
       def unpack_narray(element, string)
