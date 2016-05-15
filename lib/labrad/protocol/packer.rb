@@ -39,7 +39,7 @@ module LabRAD
       end
 
       def pack_e(_element, value)
-        data = self.class.new('(is)')
+        data = Data.new('(is)')
         data.pack(value)
       end
 
