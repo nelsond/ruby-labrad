@@ -64,7 +64,7 @@ module LabRAD
         range = lengths_size..-1
         size, array = data.unpack(string[range], with_size: true)
 
-        [size, Helper.reshape_array(array, lengths)]
+        [size, reshape_array(array, lengths)]
       end
 
       def unpack_cluster(elements, string)
@@ -72,6 +72,14 @@ module LabRAD
         data = Data.new(pattern)
 
         data.unpack(string, with_size: true)
+      end
+
+      def reshape_array(array, ndimensions)
+        ndimensions.reverse[0..-2].each do |dimension|
+          array = array.each_slice(dimension).to_a
+        end
+
+        array
       end
     end
   end

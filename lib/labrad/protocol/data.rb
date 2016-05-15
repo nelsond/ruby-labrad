@@ -1,7 +1,6 @@
 # rubocop:disable Style/Documentation
 
 require 'labrad/protocol/errors'
-require 'labrad/protocol/helper'
 require 'labrad/protocol/packer'
 require 'labrad/protocol/unpacker'
 

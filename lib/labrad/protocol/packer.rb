@@ -52,7 +52,7 @@ module LabRAD
       end
 
       def pack_narray(element, array)
-        lengths = Helper.ndimensions(array, element[1].to_i)
+        lengths = ndimensions(array, element[1].to_i)
 
         pattern = element[2..-1]
         data = Data.new(pattern)
@@ -66,6 +66,17 @@ module LabRAD
         data = Data.new(pattern)
 
         data.pack(*cluster)
+      end
+
+      def ndimensions(array, dimension)
+        a = array
+        lengths = []
+        dimension.times do
+          lengths << a.length
+          a = a.first
+        end
+
+        lengths
       end
     end
   end
