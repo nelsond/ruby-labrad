@@ -1,0 +1,4 @@
+AllCops:
+  Exclude:
+    - '*.gemspec'
+  TargetRubyVersion: 1.9
