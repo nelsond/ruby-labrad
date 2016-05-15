@@ -75,6 +75,15 @@ describe LabRAD::Protocol::Data do
       expect(result).to eq(expected_result)
     end
 
+    it 'packs cluster' do
+      packer = LabRAD::Protocol::Data.new('(ii)')
+
+      result = packer.pack([1, 1])
+      expected_result = [1, 1].pack('ll')
+
+      expect(result).to eq(expected_result)
+    end
+
     it 'packs array' do
       packer = LabRAD::Protocol::Data.new('*v')
       array = [1.23, 4.56]
@@ -185,6 +194,13 @@ describe LabRAD::Protocol::Data do
       result = packer.unpack([0, 0].pack('qq'))
 
       expect(result).to eq([Time.at(0) - 2_082_844_800])
+    end
+
+    it 'unpacks cluster' do
+      packer = LabRAD::Protocol::Data.new('(ii)')
+      result = packer.unpack([1, 1].pack('ll'))
+
+      expect(result).to eq([[1, 1]])
     end
 
     it 'unpacks array' do

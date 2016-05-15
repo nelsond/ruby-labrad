@@ -18,6 +18,8 @@ module LabRAD
               pack_narray(element, value)
             when /^\*[a-z]$/
               pack_array(element, value)
+            when /^\(.*\)$/
+              pack_cluster(element, value)
             else
               pack_element(element, value)
             end
@@ -40,6 +42,8 @@ module LabRAD
               size, value = unpack_narray(element, remaining_string)
             when /^\*[a-z]$/
               size, value = unpack_array(element, remaining_string)
+            when /^\(.*\)$/
+              size, value = unpack_cluster(element, remaining_string)
             else
               size, value = unpack_element(element, remaining_string)
             end
@@ -57,7 +61,8 @@ module LabRAD
       private
 
       def pattern_elements
-        @pattern.scan(/(\*?[0-9]*[biwsvctE])/).flatten
+        base_regexp = '\*?[0-9]*[biwsvctE]'
+        @pattern.scan(/(#{base_regexp}|\((?:#{base_regexp})+\))/).flatten
       end
 
       def pack_element(element, value)
@@ -105,6 +110,13 @@ module LabRAD
         end
 
         lengths.join + array.flatten.map { |v| pack_element(element, v) }.join
+      end
+
+      def pack_cluster(elements, cluster)
+        pattern = elements[1..-2]
+        data = self.class.new(pattern)
+
+        data.pack(*cluster)
       end
 
       def unpack_element(element, string)
@@ -164,6 +176,13 @@ module LabRAD
                                       string[range])
 
         [size, reshape_array(array, lengths)]
+      end
+
+      def unpack_cluster(elements, string)
+        pattern = elements[1..-2]
+        data = self.class.new(pattern)
+
+        data.unpack(string, with_size: true)
       end
 
       def reshape_array(array, dimensions)
