@@ -2,3 +2,6 @@ AllCops:
   Exclude:
     - '*.gemspec'
   TargetRubyVersion: 1.9
+
+Metrics/MethodLength:
+  Max: 15
