@@ -3,9 +3,12 @@
 require 'labrad/protocol/data'
 require 'labrad/protocol/record'
 
+
 module LabRAD
   module Protocol
     class Package
+      PACKAGE_DATA = Protocol::Data.new('(ww) i w s')
+
       attr_reader :context
       attr_accessor :request, :target, :records
 
@@ -13,8 +16,6 @@ module LabRAD
       alias source= target=
 
       def initialize(opts = {})
-        @labrad_data = Data.new('ww i w s')
-
         options = {
           context: 0,
           request: 1,
@@ -34,16 +35,14 @@ module LabRAD
       end
 
       def to_s
-        @labrad_data.pack(*@context,
+        PACKAGE_DATA.pack(@context,
                           @request,
                           @target,
                           @records.map(&:to_s).join)
       end
 
       def self.from_s(string)
-        labrad_data = Data.new('(ww) i w s')
-
-        context, request, target, records_string = labrad_data.unpack(string)
+        context, request, target, records_string = PACKAGE_DATA.unpack(string)
 
         package = Package.new(context: context,
                               request: request,
