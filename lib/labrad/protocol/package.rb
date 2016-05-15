@@ -41,11 +41,11 @@ module LabRAD
       end
 
       def self.from_s(string)
-        labrad_data = Data.new('ww i w s')
+        labrad_data = Data.new('(ww) i w s')
 
-        c0, c1, request, target, records_string = labrad_data.unpack(string)
+        context, request, target, records_string = labrad_data.unpack(string)
 
-        package = Package.new(context: [c0, c1],
+        package = Package.new(context: context,
                               request: request,
                               target: target,
                               records: Record.many_from_s(records_string))
