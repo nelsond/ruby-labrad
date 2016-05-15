@@ -3,7 +3,6 @@
 require 'labrad/protocol/data'
 require 'labrad/protocol/record'
 
-
 module LabRAD
   module Protocol
     class Package
