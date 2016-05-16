@@ -43,12 +43,10 @@ module LabRAD
       def self.from_s(string)
         context, request, target, records_string = PACKAGE_DATA.unpack(string)
 
-        package = Package.new(context: context,
-                              request: request,
-                              target: target,
-                              records: Record.many_from_s(records_string))
-
-        package
+        Package.new(context: context,
+                    request: request,
+                    target: target,
+                    records: Record.many_from_s(records_string))
       end
     end
   end
