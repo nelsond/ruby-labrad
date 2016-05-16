@@ -46,6 +46,10 @@ module LabRAD
         data.unpack(string, with_size: true)
       end
 
+      def unpack__(_element, _string)
+        [0, '']
+      end
+
       def unpack_array(element, string)
         length_size, length = unpack_i('i', string)
 

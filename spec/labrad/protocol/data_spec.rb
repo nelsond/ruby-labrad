@@ -114,6 +114,15 @@ describe LabRAD::Protocol::Data do
       expect(result).to eq(expected_result)
     end
 
+    it 'packs none' do
+      packer = LabRAD::Protocol::Data.new('_')
+
+      result = packer.pack('')
+      expected_result = ''
+
+      expect(result).to eq(expected_result)
+    end
+
     it 'packs error' do
       packer = LabRAD::Protocol::Data.new('E')
       code = 101
@@ -257,6 +266,13 @@ describe LabRAD::Protocol::Data do
                              message + [value].pack('d'))
 
       expect(result).to eq([[code, message], value])
+    end
+
+    it 'unpacks none' do
+      packer = LabRAD::Protocol::Data.new('_')
+      result = packer.unpack('')
+
+      expect(result).to eq([''])
     end
 
     it 'unpacks multiple elements' do

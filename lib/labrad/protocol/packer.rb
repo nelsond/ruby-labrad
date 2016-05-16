@@ -43,6 +43,10 @@ module LabRAD
         data.pack(value)
       end
 
+      def pack__(_element, _value)
+        ''
+      end
+
       def pack_array(element, array)
         pattern = element[1..-1]
         data = Data.new(pattern)

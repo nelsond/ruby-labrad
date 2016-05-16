@@ -10,11 +10,12 @@ module LabRAD
       include Packer
       include Unpacker
 
+      BASE_REGEXP = '\*?[0-9]*[biwsvctE_]'.freeze
+
       def initialize(pattern)
         @pattern = pattern
 
-        base_regexp = '\*?[0-9]*[biwsvctE]'
-        regexp = /(#{base_regexp}|\*?[0-9]*\((?:#{base_regexp})+\))/
+        regexp = /(#{BASE_REGEXP}|\*?[0-9]*\((?:#{BASE_REGEXP})+\))/
         @pattern_elements = pattern.scan(regexp).flatten
       end
 
