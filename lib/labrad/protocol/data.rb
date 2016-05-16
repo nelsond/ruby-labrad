@@ -13,7 +13,7 @@ module LabRAD
       BASE_REGEXP = '\*?[0-9]*[biwsvctE_]'.freeze
 
       def initialize(pattern)
-        @pattern = pattern
+        @pattern = pattern.gsub(/\s/, '')
 
         regexp = /(#{BASE_REGEXP}|\*?[0-9]*\((?:#{BASE_REGEXP})+\))/
         @pattern_elements = pattern.scan(regexp).flatten
