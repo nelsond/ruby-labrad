@@ -48,12 +48,11 @@ module LabRAD
 
       def unpack_array(element, string)
         length_size, length = unpack_i('i', string)
-        range = length_size..-1
 
         pattern = element[1..-1]
         data = Data.new(pattern * length)
 
-        size, array = data.unpack(string[range], with_size: true)
+        size, array = data.unpack(string[length_size..-1], with_size: true)
         [size + length_size, array]
       end
 
@@ -62,8 +61,7 @@ module LabRAD
         lengths_size, lengths = ldata.unpack(string, with_size: true)
 
         data = Data.new(element[-1] * lengths.inject(:*))
-        range = lengths_size..-1
-        size, array = data.unpack(string[range], with_size: true)
+        size, array = data.unpack(string[lengths_size..-1], with_size: true)
 
         [size + lengths_size, reshape_array(array, lengths)]
       end
