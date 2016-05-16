@@ -213,12 +213,39 @@ describe LabRAD::Protocol::Data do
       expect(result).to eq([[1, 1]])
     end
 
+    it 'unpacks cluster with array' do
+      packer = LabRAD::Protocol::Data.new('(s*s*ss)')
+
+      value = [[1].pack('l') + 'a',
+               [3, 1].pack('ll') + 'b',
+               [1].pack('l') + 'c',
+               [1].pack('l') + 'd',
+               [3, 1].pack('ll') + 'e',
+               [1].pack('l') + 'f',
+               [1].pack('l') + 'g',
+               [1].pack('l') + 'h'].join
+
+      result = packer.unpack(value)
+
+      expect(result).to eq([['a', %w(b c d), %w(e f g), 'h']])
+    end
+
     it 'unpacks array' do
       packer = LabRAD::Protocol::Data.new('*v')
       array = [1.9, 2.8, 3.7, 4.6, 5.5, 6.4, 7.3, 8.2, 9.1]
       result = packer.unpack([9, *array].pack('ld9'))
 
       expect(result).to eq([array])
+    end
+
+    it 'unpacks string array' do
+      packer = LabRAD::Protocol::Data.new('*s')
+      value = [[3, 1].pack('ll') + 'a',
+               [1].pack('l') + 'b',
+               [1].pack('l') + 'c'].join
+      result = packer.unpack(value)
+
+      expect(result).to eq([%w(a b c)])
     end
 
     it 'unpacks cluster array' do

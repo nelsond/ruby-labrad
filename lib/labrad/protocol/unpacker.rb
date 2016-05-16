@@ -53,7 +53,8 @@ module LabRAD
         pattern = element[1..-1]
         data = Data.new(pattern * length)
 
-        data.unpack(string[range], with_size: true)
+        size, array = data.unpack(string[range], with_size: true)
+        [size + length_size, array]
       end
 
       def unpack_narray(element, string)
