@@ -213,39 +213,13 @@ describe LabRAD::Protocol::Data do
       expect(result).to eq([[1, 1]])
     end
 
-    it 'unpacks cluster with array' do
-      packer = LabRAD::Protocol::Data.new('(s*s*ss)')
-
-      value = [[1].pack('l') + 'a',
-               [3, 1].pack('ll') + 'b',
-               [1].pack('l') + 'c',
-               [1].pack('l') + 'd',
-               [3, 1].pack('ll') + 'e',
-               [1].pack('l') + 'f',
-               [1].pack('l') + 'g',
-               [1].pack('l') + 'h'].join
-
-      result = packer.unpack(value)
-
-      expect(result).to eq([['a', %w(b c d), %w(e f g), 'h']])
-    end
-
     it 'unpacks array' do
       packer = LabRAD::Protocol::Data.new('*v')
       array = [1.9, 2.8, 3.7, 4.6, 5.5, 6.4, 7.3, 8.2, 9.1]
-      result = packer.unpack([9, *array].pack('ld9'))
+      string = [9, *array].pack('ld9')
+      result = packer.unpack(string, with_size: true)
 
-      expect(result).to eq([array])
-    end
-
-    it 'unpacks string array' do
-      packer = LabRAD::Protocol::Data.new('*s')
-      value = [[3, 1].pack('ll') + 'a',
-               [1].pack('l') + 'b',
-               [1].pack('l') + 'c'].join
-      result = packer.unpack(value)
-
-      expect(result).to eq([%w(a b c)])
+      expect(result).to eq([string.size, [array]])
     end
 
     it 'unpacks cluster array' do
@@ -259,9 +233,10 @@ describe LabRAD::Protocol::Data do
     it 'unpacks n-dimensional array' do
       packer = LabRAD::Protocol::Data.new('*3i')
       array = [[[1, 2], [3, 4]], [[5, 6], [7, 8]], [[9, 10], [11, 12]]]
-      result = packer.unpack([3, 2, 2, *array.flatten].pack('l3l12'))
+      string = [3, 2, 2, *array.flatten].pack('l3l12')
+      result = packer.unpack(string, with_size: true)
 
-      expect(result).to eq([array])
+      expect(result).to eq([string.size, [array]])
     end
 
     it 'unpacks error' do
