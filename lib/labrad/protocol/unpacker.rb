@@ -65,7 +65,7 @@ module LabRAD
         range = lengths_size..-1
         size, array = data.unpack(string[range], with_size: true)
 
-        [size, reshape_array(array, lengths)]
+        [size + lengths_size, reshape_array(array, lengths)]
       end
 
       def unpack_cluster(elements, string)
