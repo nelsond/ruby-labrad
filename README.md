@@ -33,3 +33,5 @@ require 'labrad'
 ## Known issues/limitations
 
 - [ ] No support for units
+- [ ] No support for server connections
+- [ ] No support for TLS
