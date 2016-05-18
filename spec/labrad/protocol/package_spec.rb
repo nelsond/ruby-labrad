@@ -7,24 +7,55 @@ describe LabRAD::Protocol::Package do
   end
 
   describe '#initialize' do
-    it 'sets default values for context, request, target/soruce, and records' do
+    it 'sets context to 0, 0 by default' do
       expect(@package.context).to eq([0, 0])
+    end
+
+    it 'sets request to 1 by default' do
       expect(@package.request).to eq(1)
+    end
+
+    it 'sets target to 1 by default' do
       expect(@package.target).to eq(1)
+    end
+
+    it 'sets source to 1 by default' do
+      expect(@package.source).to eq(1)
+    end
+
+    it 'sets no records by default' do
       expect(@package.records).to eq([])
     end
 
-    it 'accepts hash for context, request, target/source, and records' do
-      record = LabRAD::Protocol::Record.new
-      package = LabRAD::Protocol::Package.new(context: 1,
-                                              request: 2,
-                                              target: 1,
-                                              records: [record])
+    it 'uses hash argument for context' do
+      package = LabRAD::Protocol::Package.new(context: 1)
 
       expect(package.context).to eq([0, 1])
+    end
+
+    it 'uses hash argument for request' do
+      package = LabRAD::Protocol::Package.new(request: 2)
+
       expect(package.request).to eq(2)
+    end
+
+    it 'uses hash argument for target' do
+      package = LabRAD::Protocol::Package.new(target: 1)
+
       expect(package.target).to eq(1)
-      expect(package.records).to eq([record])
+    end
+
+    it 'uses hash argument for source' do
+      package = LabRAD::Protocol::Package.new(source: 1)
+
+      expect(package.source).to eq(1)
+    end
+
+    it 'uses hash argument for records' do
+      records = [LabRAD::Protocol::Record.new]
+      package = LabRAD::Protocol::Package.new(records: records)
+
+      expect(package.records).to eq(records)
     end
   end
 
@@ -69,14 +100,10 @@ describe LabRAD::Protocol::Package do
 
   describe '#to_s' do
     it 'packs package' do
-      @package.context = [0, 1]
-      @package.request = 1
-      @package.target = 1
       3.times { @package << LabRAD::Protocol::Record.new }
 
-      data = LabRAD::Protocol::Data.new('ww i w s')
-
-      expected_result = data.pack(*@package.context,
+      data = LabRAD::Protocol::Data.new('(ww) i w s')
+      expected_result = data.pack(@package.context,
                                   @package.request,
                                   @package.target,
                                   @package.records.map(&:to_s).join)
@@ -86,25 +113,40 @@ describe LabRAD::Protocol::Package do
   end
 
   describe '.from_s' do
-    it 'unpacks context, request, target/source, and records' do
-      context = [0, 1]
-      request = 1
-      target = 1
-      records = []
-      3.times { records << LabRAD::Protocol::Record.new }
+    before(:each) do
+      @context = [0, 1]
+      @request = 1
+      @target = 1
+      @records = []
+      3.times { @records << LabRAD::Protocol::Record.new }
 
-      data = LabRAD::Protocol::Data.new('ww i w s')
+      data = LabRAD::Protocol::Data.new('(ww) i w s')
+      string = data.pack(@context,
+                         @request,
+                         @target,
+                         @records.map(&:to_s).join)
 
-      string = data.pack(*context,
-                         request,
-                         target,
-                         records.map(&:to_s).join)
-      package = LabRAD::Protocol::Package.from_s(string)
+      @package = LabRAD::Protocol::Package.from_s(string)
+    end
 
-      expect(package.context).to eq(context)
-      expect(package.request).to eq(request)
-      expect(package.target).to eq(target)
-      expect(package.records).to eq(records)
+    it 'unpacks context' do
+      expect(@package.context).to eq(@context)
+    end
+
+    it 'unpacks request' do
+      expect(@package.request).to eq(@request)
+    end
+
+    it 'unpacks target' do
+      expect(@package.target).to eq(@target)
+    end
+
+    it 'unpacks source' do
+      expect(@package.target).to eq(@target)
+    end
+
+    it 'unpacks records' do
+      expect(@package.records).to eq(@records)
     end
   end
 end
