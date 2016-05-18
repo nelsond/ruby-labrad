@@ -47,6 +47,21 @@ module LabRAD
         ''
       end
 
+      def pack_?(element, value)
+        case value
+        when Integer
+          pack_i(element, value)
+        when String
+          pack_s(element, value)
+        when Float
+          pack_v(element, value)
+        when Complex
+          pack_c(element, value)
+        when Time
+          pack_t(element, value)
+        end
+      end
+
       def pack_array(element, array)
         pattern = element[1..-1]
         data = Data.new(pattern)

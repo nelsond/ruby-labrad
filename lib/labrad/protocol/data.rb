@@ -10,7 +10,7 @@ module LabRAD
       include Packer
       include Unpacker
 
-      BASE_REGEXP = '\*?[0-9]*[biwsvctE_]'.freeze
+      BASE_REGEXP = '\*?[0-9]*[\?biwsvctE_]'.freeze
 
       def initialize(pattern)
         @pattern = pattern.gsub(/\s/, '')
@@ -34,6 +34,9 @@ module LabRAD
       def unpack(string, opts = {})
         pointer = 0
         result = @pattern_elements.map do |element|
+          # do not support unpacking of any (?)
+          next if element == '?'
+
           begin
             size, value = send("unpack_#{resolve(element)}", element,
                                string[pointer..-1])

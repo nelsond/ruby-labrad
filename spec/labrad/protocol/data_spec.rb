@@ -123,6 +123,58 @@ describe LabRAD::Protocol::Data do
       expect(result).to eq(expected_result)
     end
 
+    it 'packs any with Integer' do
+      i_packer = LabRAD::Protocol::Data.new('i')
+      packer = LabRAD::Protocol::Data.new('?')
+
+      result = packer.pack(10)
+      expected_result = i_packer.pack(10)
+
+      expect(result).to eq(expected_result)
+    end
+
+    it 'packs any with String' do
+      s_packer = LabRAD::Protocol::Data.new('s')
+      packer = LabRAD::Protocol::Data.new('?')
+
+      result = packer.pack('Hello World!')
+      expected_result = s_packer.pack('Hello World!')
+
+      expect(result).to eq(expected_result)
+    end
+
+    it 'packs any with Float' do
+      v_packer = LabRAD::Protocol::Data.new('v')
+      packer = LabRAD::Protocol::Data.new('?')
+
+      result = packer.pack(1.23)
+      expected_result = v_packer.pack(1.23)
+
+      expect(result).to eq(expected_result)
+    end
+
+    it 'packs any with Complex' do
+      c_packer = LabRAD::Protocol::Data.new('c')
+      packer = LabRAD::Protocol::Data.new('?')
+
+      c = Complex(1, 1)
+      result = packer.pack(c)
+      expected_result = c_packer.pack(c)
+
+      expect(result).to eq(expected_result)
+    end
+
+    it 'packs any with Time' do
+      t_packer = LabRAD::Protocol::Data.new('t')
+      packer = LabRAD::Protocol::Data.new('?')
+
+      t = Time.now
+      result = packer.pack(t)
+      expected_result = t_packer.pack(t)
+
+      expect(result).to eq(expected_result)
+    end
+
     it 'packs error' do
       packer = LabRAD::Protocol::Data.new('E')
       code = 101
@@ -281,6 +333,13 @@ describe LabRAD::Protocol::Data do
       result = packer.unpack(values.pack('ld'))
 
       expect(result).to eq(values)
+    end
+
+    it 'ignores any (?)' do
+      packer = LabRAD::Protocol::Data.new('i?')
+      p = Proc.new { packer.unpack([10].pack('l')) }
+
+      expect(p).not_to raise_error
     end
 
     it 'optionally returns size along with result' do
