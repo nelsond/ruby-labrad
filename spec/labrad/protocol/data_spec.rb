@@ -208,6 +208,26 @@ describe LabRAD::Protocol::Data do
 
       expect(result).to eq(expected_result)
     end
+
+    it 'ignores comments in curly brackets' do
+      i_packer = LabRAD::Protocol::Data.new('i')
+      packer = LabRAD::Protocol::Data.new('i{comment}')
+
+      result = packer.pack(10)
+      expected_result = i_packer.pack(10)
+
+      expect(result).to eq(expected_result)
+    end
+
+    it 'ignores comments after colon' do
+      i_packer = LabRAD::Protocol::Data.new('i')
+      packer = LabRAD::Protocol::Data.new('i: comment')
+
+      result = packer.pack(10)
+      expected_result = i_packer.pack(10)
+
+      expect(result).to eq(expected_result)
+    end
   end
 
   describe '#unpack' do
@@ -337,7 +357,7 @@ describe LabRAD::Protocol::Data do
 
     it 'ignores any (?)' do
       packer = LabRAD::Protocol::Data.new('i?')
-      p = Proc.new { packer.unpack([10].pack('l')) }
+      p = proc { packer.unpack([10].pack('l')) }
 
       expect(p).not_to raise_error
     end

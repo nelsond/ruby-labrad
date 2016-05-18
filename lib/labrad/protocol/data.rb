@@ -13,10 +13,10 @@ module LabRAD
       BASE_REGEXP = '\*?[0-9]*[\?biwsvctE_]'.freeze
 
       def initialize(pattern)
-        @pattern = pattern.gsub(/\s/, '')
+        @pattern = sanitize_pattern(pattern)
 
         regexp = /(#{BASE_REGEXP}|\*?[0-9]*\((?:#{BASE_REGEXP})+\))/
-        @pattern_elements = pattern.scan(regexp).flatten
+        @pattern_elements = @pattern.scan(regexp).flatten
       end
 
       def pack(*values)
@@ -60,6 +60,13 @@ module LabRAD
         when /^\(.*\)$/ then :cluster
         else element.downcase.to_sym
         end
+      end
+
+      # See https://github.com/labrad/pylabrad/blob/7f4f327e5b283536089a2b97bb0b713e7ca29c12/labrad/types.py#L185
+      def sanitize_pattern(pattern)
+        pattern.gsub(/\s/, '')
+               .gsub(/^([^:]+):.+/, '\1')
+               .gsub(/\{[^\{\}]*\}/, '')
       end
     end
   end
