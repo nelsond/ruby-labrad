@@ -7,31 +7,47 @@ describe LabRAD::Protocol::Record do
   end
 
   describe '#initialize' do
-    it 'sets default values for setting, type, and data without argument' do
+    it 'sets setting to 0 by default' do
       expect(@record.setting).to eq(0)
+    end
+
+    it 'sets type to s by default' do
       expect(@record.type).to eq('s')
+    end
+
+    it 'sets data to "" by default' do
       expect(@record.data).to eq('')
     end
 
-    it 'accepts hash for setting, type, and data using hash' do
-      record = LabRAD::Protocol::Record.new(setting: 1,
-                                            type: 'i',
-                                            data: 0)
-
+    it 'uses hash argument for setting' do
+      record = LabRAD::Protocol::Record.new(setting: 1)
       expect(record.setting).to eq(1)
+    end
+
+    it 'uses hash argument for type' do
+      record = LabRAD::Protocol::Record.new(type: 'i')
       expect(record.type).to eq('i')
-      expect(record.data).to eq(0)
+    end
+
+    it 'uses data argument for data' do
+      record = LabRAD::Protocol::Record.new(data: 'Hello World!')
+      expect(record.data).to eq('Hello World!')
     end
   end
 
   describe '#==' do
-    it 'compares based on #to_s' do
+    it 'is true if #to_s is equal' do
       record_a = LabRAD::Protocol::Record.new
       record_b = LabRAD::Protocol::Record.new
-      record_c = LabRAD::Protocol::Record.new(type: 's', data: 'Hello World!')
 
       expect(record_a).to eq(record_b)
-      expect(record_a).not_to eq(record_c)
+    end
+
+    it 'is false if #to_s is unequal' do
+      record_a = LabRAD::Protocol::Record.new
+      record_b = LabRAD::Protocol::Record.new(type: 's', data: 'Hello World!')
+
+      expect(record_a).not_to eq(record_b)
     end
   end
 
@@ -51,22 +67,30 @@ describe LabRAD::Protocol::Record do
   end
 
   describe '.from_s' do
-    it 'unpacks setting, type and data' do
-      setting = 2
-      type = 'v'
-      data = 1.23
+    before(:each) do
+      @setting = 2
+      @type = 'v'
+      @data = 1.23
 
       rdata = LabRAD::Protocol::Data.new('w s s')
-      tdata = LabRAD::Protocol::Data.new(type)
+      tdata = LabRAD::Protocol::Data.new(@type)
 
-      string = rdata.pack(setting,
-                          type,
-                          tdata.pack(data))
-      record = LabRAD::Protocol::Record.from_s(string)
+      string = rdata.pack(@setting,
+                          @type,
+                          tdata.pack(@data))
+      @record = LabRAD::Protocol::Record.from_s(string)
+    end
 
-      expect(record.setting).to eq(setting)
-      expect(record.type).to eq(type)
-      expect(record.data).to eq(data)
+    it 'unpacks setting' do
+      expect(@record.setting).to eq(@setting)
+    end
+
+    it 'unpacks type' do
+      expect(@record.type).to eq(@type)
+    end
+
+    it 'unpacks data' do
+      expect(@record.data).to eq(@data)
     end
   end
 
