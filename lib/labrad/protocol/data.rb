@@ -21,14 +21,14 @@ module LabRAD
 
       def pack(*values)
         @pattern_elements.zip(values).map do |item|
-          begin
-            element, value = item
-            send("pack_#{resolve(element)}", element, value)
-          rescue
-            raise LabRAD::PackError,
-                  "Can't pack '#{@pattern}' using #{values.inspect}"
-          end
+          element, value = item
+          send("pack_#{resolve(element)}", element, value)
         end.join
+
+      rescue
+        raise LabRAD::PackError,
+              "Can't pack '#{@pattern}' using #{values.inspect}"
+
       end
 
       def unpack(stream)
@@ -38,15 +38,14 @@ module LabRAD
           # do not support unpacking of any (?)
           next if element == '?'
 
-          begin
-            send("unpack_#{resolve(element)}", element, stream)
-          rescue
-            raise LabRAD::UnpackError,
-                  "Can't unpack '#{stream.inspect}' using '#{@pattern}'"
-          end
+          send("unpack_#{resolve(element)}", element, stream)
         end
 
         result
+
+      rescue
+        raise LabRAD::UnpackError,
+              "Can't unpack '#{stream.inspect}' using '#{@pattern}'"
       end
 
       private
