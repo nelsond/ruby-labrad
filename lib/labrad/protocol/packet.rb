@@ -36,7 +36,7 @@ module LabRAD
       end
 
       def records?
-        @records.empty?
+        !@records.empty?
       end
 
       def to_s
