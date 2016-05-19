@@ -33,14 +33,12 @@ module LabRAD
       def unpack(stream)
         stream = StringIO.new(stream) if stream.is_a?(String)
 
-        result = @pattern_elements.map do |element|
+        @pattern_elements.map do |element|
           # do not support unpacking of any (?)
           next if element == '?'
 
           send("unpack_#{resolve(element)}", element, stream)
         end
-
-        result
 
       rescue
         raise LabRAD::UnpackError,
