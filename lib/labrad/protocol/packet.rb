@@ -5,8 +5,8 @@ require 'labrad/protocol/record'
 
 module LabRAD
   module Protocol
-    class Package
-      PACKAGE_DATA = Protocol::Data.new('(ww) i w s')
+    class Packet
+      PACKET_DATA = Protocol::Data.new('(ww) i w s')
 
       attr_reader :context
       attr_accessor :request, :target, :records
@@ -34,19 +34,19 @@ module LabRAD
       end
 
       def to_s
-        PACKAGE_DATA.pack(@context,
-                          @request,
-                          @target,
-                          @records.map(&:to_s).join)
+        PACKET_DATA.pack(@context,
+                         @request,
+                         @target,
+                         @records.map(&:to_s).join)
       end
 
       def self.from_s(string)
-        context, request, target, records_string = PACKAGE_DATA.unpack(string)
+        context, request, target, records_string = PACKET_DATA.unpack(string)
 
-        Package.new(context: context,
-                    request: request,
-                    target: target,
-                    records: Record.many_from_s(records_string))
+        Packet.new(context: context,
+                   request: request,
+                   target: target,
+                   records: Record.many_from_s(records_string))
       end
     end
   end
