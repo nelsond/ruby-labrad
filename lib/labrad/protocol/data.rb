@@ -31,24 +31,22 @@ module LabRAD
         end.join
       end
 
-      def unpack(string, opts = {})
-        pointer = 0
+      def unpack(stream)
+        stream = StringIO.new(stream) if stream.is_a?(String)
+
         result = @pattern_elements.map do |element|
           # do not support unpacking of any (?)
           next if element == '?'
 
           begin
-            size, value = send("unpack_#{resolve(element)}", element,
-                               string[pointer..-1])
-            pointer += size
-            value
+            send("unpack_#{resolve(element)}", element, stream)
           rescue
             raise LabRAD::UnpackError,
-                  "Can't unpack '#{string.inspect}' using '#{@pattern}'"
+                  "Can't unpack '#{stream.inspect}' using '#{@pattern}'"
           end
         end
 
-        opts[:with_size] ? [pointer, result] : result
+        result
       end
 
       private

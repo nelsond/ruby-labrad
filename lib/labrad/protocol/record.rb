@@ -45,16 +45,11 @@ module LabRAD
         Record.new(setting: setting, type: type, data: data)
       end
 
-      def self.many_from_s(string)
-        records = []
-        pointer = 0
-        while pointer < string.length
-          size, = RECORD_DATA.unpack(string[pointer..-1], with_size: true)
-          s = string[pointer..pointer + size]
-          records << Record.from_s(s)
+      def self.many_from_s(stream)
+        stream = StringIO.new(stream) if stream.is_a?(String)
 
-          pointer += size
-        end
+        records = []
+        records << from_s(stream) until stream.eof?
 
         records
       end

@@ -298,9 +298,9 @@ describe LabRAD::Protocol::Data do
       packer = LabRAD::Protocol::Data.new('*v')
       array = [1.9, 2.8, 3.7, 4.6, 5.5, 6.4, 7.3, 8.2, 9.1]
       string = [9, *array].pack('ld9')
-      result = packer.unpack(string, with_size: true)
+      result = packer.unpack(string)
 
-      expect(result).to eq([string.size, [array]])
+      expect(result).to eq([array])
     end
 
     it 'unpacks cluster array' do
@@ -315,9 +315,9 @@ describe LabRAD::Protocol::Data do
       packer = LabRAD::Protocol::Data.new('*3i')
       array = [[[1, 2], [3, 4]], [[5, 6], [7, 8]], [[9, 10], [11, 12]]]
       string = [3, 2, 2, *array.flatten].pack('l3l12')
-      result = packer.unpack(string, with_size: true)
+      result = packer.unpack(string)
 
-      expect(result).to eq([string.size, [array]])
+      expect(result).to eq([array])
     end
 
     it 'unpacks error' do
@@ -360,13 +360,6 @@ describe LabRAD::Protocol::Data do
       p = proc { packer.unpack([10].pack('l')) }
 
       expect(p).not_to raise_error
-    end
-
-    it 'optionally returns size along with result' do
-      packer = LabRAD::Protocol::Data.new('i')
-      result = packer.unpack([1024].pack('l'), with_size: true)
-
-      expect(result).to eq([4, [1024]])
     end
   end
 end

@@ -5,76 +5,71 @@ require 'labrad/protocol/data'
 module LabRAD
   module Protocol
     module Unpacker
-      def unpack_b(_element, string)
-        [1, string[0] == "\x01"]
+      def unpack_b(_element, stream)
+        stream.read(1) == "\x01"
       end
 
-      def unpack_i(_element, string)
-        [4, string[0..3].unpack('l').first]
+      def unpack_i(_element, stream)
+        stream.read(4).unpack('l').first
       end
 
-      def unpack_w(_element, string)
-        [4, string[0..3].unpack('L').first]
+      def unpack_w(_element, stream)
+        stream.read(4).unpack('L').first
       end
 
-      def unpack_s(_element, string)
-        length_size, length = unpack_i('i', string)
-        range = length_size..length_size + length - 1
-        [length_size + length, string[range]]
+      def unpack_s(_element, stream)
+        length = unpack_i('i', stream)
+        stream.read(length)
       end
 
-      def unpack_v(_element, string)
-        [8, string[0..7].unpack('d').first]
+      def unpack_v(_element, stream)
+        stream.read(8).unpack('d').first
       end
 
-      def unpack_c(_element, string)
-        data = Data.new('vv')
-        size, values = data.unpack(string, with_size: true)
-        real, imag = values
-        [size, Complex(real, imag)]
+      def unpack_c(_element, stream)
+        real, imag = LabRAD::Protocol::Data.new('vv').unpack(stream)
+        Complex(real, imag)
       end
 
-      def unpack_t(_element, string)
-        seconds, fractions = string[0..127].unpack('qq')
-        timestamp = "#{seconds}.#{fractions}".to_f
+      def unpack_t(_element, stream)
+        seconds, fractions = stream.read(128).unpack('qq')
         # timestamp is referenced to 1904
-        [128, Time.at(timestamp - 2_082_844_800)]
+        timestamp = "#{seconds}.#{fractions}".to_f - 2_082_844_800
+        Time.at(timestamp)
       end
 
-      def unpack_e(_element, string)
-        data = Data.new('is')
-        data.unpack(string, with_size: true)
+      def unpack_e(_element, stream)
+        LabRAD::Protocol::Data.new('is').unpack(stream)
       end
 
-      def unpack__(_element, _string)
-        [0, '']
+      def unpack__(_element, _stream)
+        ''
       end
 
-      def unpack_array(element, string)
-        length_size, length = unpack_i('i', string)
+      def unpack_array(element, stream)
+        length = unpack_i('i', stream)
 
         pattern = element[1..-1]
-        data = Data.new(pattern * length)
+        data = LabRAD::Protocol::Data.new(pattern * length)
 
-        size, array = data.unpack(string[length_size..-1], with_size: true)
-        [size + length_size, array]
+        data.unpack(stream)
       end
 
-      def unpack_narray(element, string)
-        ldata = Data.new('i' * element[1].to_i)
-        lengths_size, lengths = ldata.unpack(string, with_size: true)
+      def unpack_narray(element, stream)
+        ldata = LabRAD::Protocol::Data.new('i' * element[1].to_i)
+        lengths = ldata.unpack(stream)
 
-        data = Data.new(element[-1] * lengths.inject(:*))
-        size, array = data.unpack(string[lengths_size..-1], with_size: true)
+        data = LabRAD::Protocol::Data.new(element[-1] * lengths.inject(:*))
+        array = data.unpack(stream)
 
-        [size + lengths_size, reshape_array(array, lengths)]
+        reshape_array(array, lengths)
       end
 
-      def unpack_cluster(elements, string)
+      def unpack_cluster(elements, stream)
         pattern = elements[1..-2]
-        data = Data.new(pattern)
+        data = LabRAD::Protocol::Data.new(pattern)
 
-        data.unpack(string, with_size: true)
+        data.unpack(stream)
       end
 
       def reshape_array(array, ndimensions)
