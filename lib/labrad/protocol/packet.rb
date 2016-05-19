@@ -35,8 +35,8 @@ module LabRAD
         @records << record
       end
 
-      def has_records?
-        @records.length > 0
+      def records?
+        @records.empty?
       end
 
       def to_s
