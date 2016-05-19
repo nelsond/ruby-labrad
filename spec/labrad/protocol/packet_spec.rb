@@ -112,6 +112,21 @@ describe LabRAD::Protocol::Packet do
     end
   end
 
+  describe '#has_records?' do
+    it 'returns false if packet.record.length == 0' do
+      packet = LabRAD::Protocol::Packet.new(records: [])
+
+      expect(packet.has_records?).to be false
+    end
+
+    it 'returns true if packet.record.length > 0' do
+      record = LabRAD::Protocol::Record.new
+      packet = LabRAD::Protocol::Packet.new(records: [record])
+
+      expect(packet.has_records?).to be true
+    end
+  end
+
   describe '.from_s' do
     before(:each) do
       @context = [0, 1]

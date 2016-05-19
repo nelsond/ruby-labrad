@@ -33,6 +33,10 @@ module LabRAD
         @records << record
       end
 
+      def has_records?
+        @records.length > 0
+      end
+
       def to_s
         PACKET_DATA.pack(@context,
                          @request,
