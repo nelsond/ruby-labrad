@@ -28,7 +28,6 @@ module LabRAD
       rescue
         raise LabRAD::PackError,
               "Can't pack '#{@pattern}' using #{values.inspect}"
-
       end
 
       def unpack(stream)
