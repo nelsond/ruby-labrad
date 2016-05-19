@@ -14,7 +14,7 @@ module LabRAD
       alias source target
       alias source= target=
 
-      def initialize(opts = {})
+      def initialize(opts = {}, &block)
         options = {
           context: 0,
           request: 1,
@@ -23,6 +23,8 @@ module LabRAD
         }.merge(opts)
 
         options.map { |k, v| send("#{k}=", v) }
+
+        block.call(self) if block_given?
       end
 
       def context=(x)

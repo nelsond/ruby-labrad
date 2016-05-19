@@ -57,6 +57,15 @@ describe LabRAD::Protocol::Packet do
 
       expect(packet.records).to eq(records)
     end
+
+    it 'allows block to set records' do
+      record = LabRAD::Protocol::Record.new
+      packet = LabRAD::Protocol::Packet.new do |p|
+        p << record
+      end
+
+      expect(packet.records).to eq([record])
+    end
   end
 
   describe '#source' do
