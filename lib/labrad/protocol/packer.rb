@@ -49,16 +49,11 @@ module LabRAD
 
       def pack_?(element, value)
         case value
-        when Integer
-          pack_i(element, value)
-        when String
-          pack_s(element, value)
-        when Float
-          pack_v(element, value)
-        when Complex
-          pack_c(element, value)
-        when Time
-          pack_t(element, value)
+        when Integer then pack_i(element, value)
+        when String then pack_s(element, value)
+        when Float then pack_v(element, value)
+        when Complex then pack_c(element, value)
+        when Time then pack_t(element, value)
         end
       end
 
