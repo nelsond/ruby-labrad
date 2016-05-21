@@ -122,13 +122,13 @@ describe LabRAD::Protocol::Packet do
   end
 
   describe '#records?' do
-    it 'returns false if packet.record.length == 0' do
+    it 'returns false if records is empty' do
       packet = LabRAD::Protocol::Packet.new(records: [])
 
       expect(packet.records?).to be false
     end
 
-    it 'returns true if packet.record.length > 0' do
+    it 'returns true if records is empty' do
       record = LabRAD::Protocol::Record.new
       packet = LabRAD::Protocol::Packet.new(records: [record])
 
