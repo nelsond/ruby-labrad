@@ -21,8 +21,8 @@ describe Labrad::Connection do
 
   describe '#initialize' do
     around(:each) do |example|
-      labrad_host = ENV.fetch('LABRADHOST')
-      labrad_password = ENV.fetch('LABRADPASSWORD')
+      labrad_host = ENV.fetch('LABRADHOST', nil)
+      labrad_password = ENV.fetch('LABRADPASSWORD', nil)
 
       ENV.store('LABRADHOST', 'some-custom-host.com')
       ENV.store('LABRADPASSWORD', 'secret')
