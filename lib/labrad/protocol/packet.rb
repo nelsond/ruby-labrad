@@ -39,6 +39,10 @@ module LabRAD
         !@records.empty?
       end
 
+      def ==(other)
+        to_s == other.to_s
+      end
+
       def to_s
         PACKET_DATA.pack(@context,
                          @request,

@@ -136,6 +136,22 @@ describe LabRAD::Protocol::Packet do
     end
   end
 
+  describe '#==' do
+    it 'is true if #to_s is equal' do
+      packet_a = LabRAD::Protocol::Packet.new
+      packet_b = LabRAD::Protocol::Packet.new
+
+      expect(packet_a).to eq(packet_b)
+    end
+
+    it 'is false if #to_s is unequal' do
+      packet_a = LabRAD::Protocol::Packet.new
+      packet_b = LabRAD::Protocol::Packet.new(context: 100)
+
+      expect(packet_a).not_to eq(packet_b)
+    end
+  end
+
   describe '.from_s' do
     before(:each) do
       @context = [0, 1]
