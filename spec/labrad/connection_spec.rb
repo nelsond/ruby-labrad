@@ -4,14 +4,14 @@ require 'labrad/errors'
 require 'labrad/manager'
 require 'support/mock_manager'
 
-describe LabRAD::Connection do
+describe Labrad::Connection do
   before(:each) do
-    @connection = LabRAD::Connection.new(host: 'localhost',
+    @connection = Labrad::Connection.new(host: 'localhost',
                                          password: '',
                                          timeout: 0.1)
     @manager = MockManager.new(7682)
-    @manager.buffer << LabRAD::Protocol::Packet.new do |p|
-      p << LabRAD::Protocol::Record.new(data: 'challenge')
+    @manager.buffer << Labrad::Protocol::Packet.new do |p|
+      p << Labrad::Protocol::Record.new(data: 'challenge')
     end
   end
 
@@ -27,7 +27,7 @@ describe LabRAD::Connection do
       ENV.store('LABRADHOST', 'some-custom-host.com')
       ENV.store('LABRADPASSWORD', 'secret')
 
-      @connection_with_defaults = LabRAD::Connection.new
+      @connection_with_defaults = Labrad::Connection.new
       example.run
 
       ENV.store('LABRADHOST', labrad_host)
@@ -45,8 +45,8 @@ describe LabRAD::Connection do
 
   context 'with wrong password' do
     before(:each) do
-      @manager.buffer << LabRAD::Protocol::Packet.new do |p|
-        p << LabRAD::Protocol::Record.new(type: 'E_',
+      @manager.buffer << Labrad::Protocol::Packet.new do |p|
+        p << Labrad::Protocol::Record.new(type: 'E_',
                                           data: [101, 'Wrong password'])
       end
     end
@@ -55,15 +55,15 @@ describe LabRAD::Connection do
       it 'raises AuthenticationError' do
         @manager.start
 
-        expect { @connection.open }.to raise_error(LabRAD::AuthenticationError)
+        expect { @connection.open }.to raise_error(Labrad::AuthenticationError)
       end
     end
   end
 
   context 'with correct password' do
     before(:each) do
-      @manager.buffer << LabRAD::Protocol::Packet.new do |p|
-        p << LabRAD::Protocol::Record.new(data: 'Welcome')
+      @manager.buffer << Labrad::Protocol::Packet.new do |p|
+        p << Labrad::Protocol::Record.new(data: 'Welcome')
       end
     end
 
@@ -84,11 +84,11 @@ describe LabRAD::Connection do
         @manager.start
         @connection.open
 
-        expect { @connection.recv_packet }.to raise_error(LabRAD::TimeoutError)
+        expect { @connection.recv_packet }.to raise_error(Labrad::TimeoutError)
       end
 
       it 'returns received packet' do
-        packet = LabRAD::Protocol::Packet.new
+        packet = Labrad::Protocol::Packet.new
         @manager.buffer << packet
         @manager.start
 
@@ -100,18 +100,18 @@ describe LabRAD::Connection do
 
     describe '#recv_record' do
       it 'raises InvalidResponseError if no records in response' do
-        @manager.buffer << LabRAD::Protocol::Packet.new
+        @manager.buffer << Labrad::Protocol::Packet.new
         @manager.start
 
         @connection.open
 
-        error = LabRAD::InvalidResponseError
+        error = Labrad::InvalidResponseError
         expect { @connection.recv_record }.to raise_error(error)
       end
 
       it 'returns first record in received packet' do
-        record = LabRAD::Protocol::Record.new(type: 's', data: 'Hello World!')
-        @manager.buffer << LabRAD::Protocol::Packet.new(records: [record])
+        record = Labrad::Protocol::Record.new(type: 's', data: 'Hello World!')
+        @manager.buffer << Labrad::Protocol::Packet.new(records: [record])
         @manager.start
 
         @connection.open
@@ -125,9 +125,9 @@ describe LabRAD::Connection do
         @manager.start
         @connection.open
 
-        packet = LabRAD::Protocol::Packet.new do |p|
+        packet = Labrad::Protocol::Packet.new do |p|
           p.context = 2
-          p << LabRAD::Protocol::Record.new(type: 's', data: 'Hello World!')
+          p << Labrad::Protocol::Record.new(type: 's', data: 'Hello World!')
         end
         @connection.send_packet(context: packet.context,
                                 records: packet.records)
@@ -142,7 +142,7 @@ describe LabRAD::Connection do
         @manager.start
         @connection.open
 
-        record = LabRAD::Protocol::Record.new(type: 's', data: 'Hello World!')
+        record = Labrad::Protocol::Record.new(type: 's', data: 'Hello World!')
         @connection.send_record(type: record.type, data: record.data)
         received_record = @manager.read_packets.last.records.first
 
@@ -158,7 +158,7 @@ describe LabRAD::Connection do
 
         last_record = @manager.read_packets.last.records.first
 
-        expect(last_record.setting).to eq(LabRAD::Manager::EXPIRE_ALL)
+        expect(last_record.setting).to eq(Labrad::Manager::EXPIRE_ALL)
       end
     end
   end

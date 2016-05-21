@@ -2,7 +2,7 @@
 
 require 'labrad/protocol/data'
 
-module LabRAD
+module Labrad
   module Protocol
     class Record
       RECORD_DATA = Data.new('w s s')

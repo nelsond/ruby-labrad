@@ -1,15 +1,15 @@
 require 'labrad/protocol/data'
 
-describe LabRAD::Protocol::Data do
+describe Labrad::Protocol::Data do
   describe '#pack' do
     it 'raises PackError for invalid arguments' do
-      data = LabRAD::Protocol::Data.new('s')
+      data = Labrad::Protocol::Data.new('s')
 
-      expect { data.pack(nil) }.to raise_error(LabRAD::PackError)
+      expect { data.pack(nil) }.to raise_error(Labrad::PackError)
     end
 
     it 'packs boolean' do
-      data = LabRAD::Protocol::Data.new('b')
+      data = Labrad::Protocol::Data.new('b')
 
       result = data.pack(true)
       expected_result = [1].pack('c')
@@ -18,7 +18,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs signed integer' do
-      data = LabRAD::Protocol::Data.new('i')
+      data = Labrad::Protocol::Data.new('i')
 
       result = data.pack(1024)
       expected_result = [1024].pack('l')
@@ -27,7 +27,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs unsigned integer' do
-      data = LabRAD::Protocol::Data.new('w')
+      data = Labrad::Protocol::Data.new('w')
 
       result = data.pack(1024)
       expected_result = [1024].pack('L')
@@ -36,7 +36,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs string' do
-      data = LabRAD::Protocol::Data.new('s')
+      data = Labrad::Protocol::Data.new('s')
       string = 'Hello World!'
 
       result = data.pack(string)
@@ -46,7 +46,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs value' do
-      data = LabRAD::Protocol::Data.new('v')
+      data = Labrad::Protocol::Data.new('v')
       value = 1.23456789
 
       result = data.pack(value)
@@ -56,7 +56,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs complex value' do
-      data = LabRAD::Protocol::Data.new('c')
+      data = Labrad::Protocol::Data.new('c')
       value = Complex(1.23, 4.56)
 
       result = data.pack(value)
@@ -66,7 +66,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs timestamp' do
-      data = LabRAD::Protocol::Data.new('t')
+      data = Labrad::Protocol::Data.new('t')
       timestamp = Time.at(0) - 2_082_844_800 # 12:00am Jan 1, 1904 UTC
 
       result = data.pack(timestamp)
@@ -76,7 +76,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs cluster' do
-      data = LabRAD::Protocol::Data.new('(ii)')
+      data = Labrad::Protocol::Data.new('(ii)')
 
       result = data.pack([1, 1])
       expected_result = [1, 1].pack('ll')
@@ -85,7 +85,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs array' do
-      data = LabRAD::Protocol::Data.new('*v')
+      data = Labrad::Protocol::Data.new('*v')
       array = [1.23, 4.56]
 
       result = data.pack(array)
@@ -95,7 +95,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs cluster array' do
-      data = LabRAD::Protocol::Data.new('*(iv)')
+      data = Labrad::Protocol::Data.new('*(iv)')
       array = [[1, 2.34], [5, 6.78]]
 
       result = data.pack(array)
@@ -105,7 +105,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs n-dimensional array' do
-      data = LabRAD::Protocol::Data.new('*3i')
+      data = Labrad::Protocol::Data.new('*3i')
       array = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
 
       result = data.pack(array)
@@ -115,7 +115,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs none' do
-      data = LabRAD::Protocol::Data.new('_')
+      data = Labrad::Protocol::Data.new('_')
 
       result = data.pack('')
       expected_result = ''
@@ -124,8 +124,8 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs any with Integer' do
-      i_data = LabRAD::Protocol::Data.new('i')
-      data = LabRAD::Protocol::Data.new('?')
+      i_data = Labrad::Protocol::Data.new('i')
+      data = Labrad::Protocol::Data.new('?')
 
       result = data.pack(10)
       expected_result = i_data.pack(10)
@@ -134,8 +134,8 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs any with String' do
-      s_data = LabRAD::Protocol::Data.new('s')
-      data = LabRAD::Protocol::Data.new('?')
+      s_data = Labrad::Protocol::Data.new('s')
+      data = Labrad::Protocol::Data.new('?')
 
       result = data.pack('Hello World!')
       expected_result = s_data.pack('Hello World!')
@@ -144,8 +144,8 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs any with Float' do
-      v_data = LabRAD::Protocol::Data.new('v')
-      data = LabRAD::Protocol::Data.new('?')
+      v_data = Labrad::Protocol::Data.new('v')
+      data = Labrad::Protocol::Data.new('?')
 
       result = data.pack(1.23)
       expected_result = v_data.pack(1.23)
@@ -154,8 +154,8 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs any with Complex' do
-      c_data = LabRAD::Protocol::Data.new('c')
-      data = LabRAD::Protocol::Data.new('?')
+      c_data = Labrad::Protocol::Data.new('c')
+      data = Labrad::Protocol::Data.new('?')
 
       c = Complex(1, 1)
       result = data.pack(c)
@@ -165,8 +165,8 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs any with Time' do
-      t_data = LabRAD::Protocol::Data.new('t')
-      data = LabRAD::Protocol::Data.new('?')
+      t_data = Labrad::Protocol::Data.new('t')
+      data = Labrad::Protocol::Data.new('?')
 
       t = Time.now
       result = data.pack(t)
@@ -176,7 +176,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs error' do
-      data = LabRAD::Protocol::Data.new('E')
+      data = Labrad::Protocol::Data.new('E')
       code = 101
       message = 'Some random error'
 
@@ -187,7 +187,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs error with element' do
-      data = LabRAD::Protocol::Data.new('Ev')
+      data = Labrad::Protocol::Data.new('Ev')
       code = 101
       message = 'Some random error'
       value = 1.23
@@ -200,7 +200,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'packs multiple elements' do
-      data = LabRAD::Protocol::Data.new('iv')
+      data = Labrad::Protocol::Data.new('iv')
       values = [1024, 1.34]
 
       result = data.pack(*values)
@@ -210,8 +210,8 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'ignores comments in curly brackets' do
-      i_data = LabRAD::Protocol::Data.new('i')
-      data = LabRAD::Protocol::Data.new('i{comment}')
+      i_data = Labrad::Protocol::Data.new('i')
+      data = Labrad::Protocol::Data.new('i{comment}')
 
       result = data.pack(10)
       expected_result = i_data.pack(10)
@@ -220,8 +220,8 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'ignores comments after colon' do
-      i_data = LabRAD::Protocol::Data.new('i')
-      data = LabRAD::Protocol::Data.new('i: comment')
+      i_data = Labrad::Protocol::Data.new('i')
+      data = Labrad::Protocol::Data.new('i: comment')
 
       result = data.pack(10)
       expected_result = i_data.pack(10)
@@ -232,34 +232,34 @@ describe LabRAD::Protocol::Data do
 
   describe '#unpack' do
     it 'raises UnpackError for invalid arguments' do
-      data = LabRAD::Protocol::Data.new('s')
+      data = Labrad::Protocol::Data.new('s')
 
-      expect { data.unpack('') }.to raise_error(LabRAD::UnpackError)
+      expect { data.unpack('') }.to raise_error(Labrad::UnpackError)
     end
 
     it 'unpacks boolean' do
-      data = LabRAD::Protocol::Data.new('b')
+      data = Labrad::Protocol::Data.new('b')
       result = data.unpack([1].pack('c'))
 
       expect(result).to eq([true])
     end
 
     it 'unpacks signed integer' do
-      data = LabRAD::Protocol::Data.new('i')
+      data = Labrad::Protocol::Data.new('i')
       result = data.unpack([1024].pack('l'))
 
       expect(result).to eq([1024])
     end
 
     it 'unpacks unsigned integer' do
-      data = LabRAD::Protocol::Data.new('w')
+      data = Labrad::Protocol::Data.new('w')
       result = data.unpack([1024].pack('L'))
 
       expect(result).to eq([1024])
     end
 
     it 'unpacks string' do
-      data = LabRAD::Protocol::Data.new('s')
+      data = Labrad::Protocol::Data.new('s')
       string = 'Hello World!'
       result = data.unpack([string.length].pack('l') + string)
 
@@ -267,35 +267,35 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'unpacks value' do
-      data = LabRAD::Protocol::Data.new('v')
+      data = Labrad::Protocol::Data.new('v')
       result = data.unpack([1.2345].pack('d'))
 
       expect(result).to eq([1.2345])
     end
 
     it 'unpacks complex value' do
-      data = LabRAD::Protocol::Data.new('c')
+      data = Labrad::Protocol::Data.new('c')
       result = data.unpack([1, 1].pack('dd'))
 
       expect(result).to eq([Complex(1, 1)])
     end
 
     it 'unpacks timestamp' do
-      data = LabRAD::Protocol::Data.new('t')
+      data = Labrad::Protocol::Data.new('t')
       result = data.unpack([0, 0].pack('qq'))
 
       expect(result).to eq([Time.at(0) - 2_082_844_800])
     end
 
     it 'unpacks cluster' do
-      data = LabRAD::Protocol::Data.new('(ii)')
+      data = Labrad::Protocol::Data.new('(ii)')
       result = data.unpack([1, 1].pack('ll'))
 
       expect(result).to eq([[1, 1]])
     end
 
     it 'unpacks array' do
-      data = LabRAD::Protocol::Data.new('*v')
+      data = Labrad::Protocol::Data.new('*v')
       array = [1.9, 2.8, 3.7, 4.6, 5.5, 6.4, 7.3, 8.2, 9.1]
       string = [9, *array].pack('ld9')
       result = data.unpack(string)
@@ -304,7 +304,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'unpacks cluster array' do
-      data = LabRAD::Protocol::Data.new('*(iv)')
+      data = Labrad::Protocol::Data.new('*(iv)')
       array = [[1, 2.34], [5, 6.78]]
       result = data.unpack([2, *array.flatten].pack('lldld'))
 
@@ -312,7 +312,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'unpacks n-dimensional array' do
-      data = LabRAD::Protocol::Data.new('*3i')
+      data = Labrad::Protocol::Data.new('*3i')
       array = [[[1, 2], [3, 4]], [[5, 6], [7, 8]], [[9, 10], [11, 12]]]
       string = [3, 2, 2, *array.flatten].pack('l3l12')
       result = data.unpack(string)
@@ -321,7 +321,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'unpacks error' do
-      data = LabRAD::Protocol::Data.new('E')
+      data = Labrad::Protocol::Data.new('E')
       code = 101
       message = 'Some random error'
       result = data.unpack([code, message.length].pack('ll') + message)
@@ -330,7 +330,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'unpacks error with element' do
-      data = LabRAD::Protocol::Data.new('Ev')
+      data = Labrad::Protocol::Data.new('Ev')
       code = 101
       message = 'Some random error'
       value = 1.23
@@ -341,14 +341,14 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'unpacks none' do
-      data = LabRAD::Protocol::Data.new('_')
+      data = Labrad::Protocol::Data.new('_')
       result = data.unpack('')
 
       expect(result).to eq([''])
     end
 
     it 'unpacks multiple elements' do
-      data = LabRAD::Protocol::Data.new('iv')
+      data = Labrad::Protocol::Data.new('iv')
       values = [1024, 1.34]
       result = data.unpack(values.pack('ld'))
 
@@ -356,7 +356,7 @@ describe LabRAD::Protocol::Data do
     end
 
     it 'ignores any (?)' do
-      data = LabRAD::Protocol::Data.new('i?')
+      data = Labrad::Protocol::Data.new('i?')
       p = proc { data.unpack([10].pack('l')) }
 
       expect(p).not_to raise_error

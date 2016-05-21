@@ -1,9 +1,9 @@
 require 'labrad/protocol/packet'
 require 'labrad/protocol/record'
 
-describe LabRAD::Protocol::Packet do
+describe Labrad::Protocol::Packet do
   before(:each) do
-    @packet = LabRAD::Protocol::Packet.new
+    @packet = Labrad::Protocol::Packet.new
   end
 
   describe '#initialize' do
@@ -28,39 +28,39 @@ describe LabRAD::Protocol::Packet do
     end
 
     it 'uses hash argument for context' do
-      packet = LabRAD::Protocol::Packet.new(context: 1)
+      packet = Labrad::Protocol::Packet.new(context: 1)
 
       expect(packet.context).to eq([0, 1])
     end
 
     it 'uses hash argument for request' do
-      packet = LabRAD::Protocol::Packet.new(request: 2)
+      packet = Labrad::Protocol::Packet.new(request: 2)
 
       expect(packet.request).to eq(2)
     end
 
     it 'uses hash argument for target' do
-      packet = LabRAD::Protocol::Packet.new(target: 1)
+      packet = Labrad::Protocol::Packet.new(target: 1)
 
       expect(packet.target).to eq(1)
     end
 
     it 'uses hash argument for source' do
-      packet = LabRAD::Protocol::Packet.new(source: 1)
+      packet = Labrad::Protocol::Packet.new(source: 1)
 
       expect(packet.source).to eq(1)
     end
 
     it 'uses hash argument for records' do
-      records = [LabRAD::Protocol::Record.new]
-      packet = LabRAD::Protocol::Packet.new(records: records)
+      records = [Labrad::Protocol::Record.new]
+      packet = Labrad::Protocol::Packet.new(records: records)
 
       expect(packet.records).to eq(records)
     end
 
     it 'allows block to set records' do
-      record = LabRAD::Protocol::Record.new
-      packet = LabRAD::Protocol::Packet.new do |p|
+      record = Labrad::Protocol::Record.new
+      packet = Labrad::Protocol::Packet.new do |p|
         p << record
       end
 
@@ -100,7 +100,7 @@ describe LabRAD::Protocol::Packet do
 
   describe '#<<' do
     it 'adds record' do
-      record = LabRAD::Protocol::Record.new
+      record = Labrad::Protocol::Record.new
       @packet << record
 
       expect(@packet.records).to eq([record])
@@ -109,9 +109,9 @@ describe LabRAD::Protocol::Packet do
 
   describe '#to_s' do
     it 'packs packet' do
-      3.times { @packet << LabRAD::Protocol::Record.new }
+      3.times { @packet << Labrad::Protocol::Record.new }
 
-      data = LabRAD::Protocol::Data.new('(ww) i w s')
+      data = Labrad::Protocol::Data.new('(ww) i w s')
       expected_result = data.pack(@packet.context,
                                   @packet.request,
                                   @packet.target,
@@ -123,14 +123,14 @@ describe LabRAD::Protocol::Packet do
 
   describe '#records?' do
     it 'returns false if records is empty' do
-      packet = LabRAD::Protocol::Packet.new(records: [])
+      packet = Labrad::Protocol::Packet.new(records: [])
 
       expect(packet.records?).to be false
     end
 
     it 'returns true if records is empty' do
-      record = LabRAD::Protocol::Record.new
-      packet = LabRAD::Protocol::Packet.new(records: [record])
+      record = Labrad::Protocol::Record.new
+      packet = Labrad::Protocol::Packet.new(records: [record])
 
       expect(packet.records?).to be true
     end
@@ -138,15 +138,15 @@ describe LabRAD::Protocol::Packet do
 
   describe '#==' do
     it 'is true if #to_s is equal' do
-      packet_a = LabRAD::Protocol::Packet.new
-      packet_b = LabRAD::Protocol::Packet.new
+      packet_a = Labrad::Protocol::Packet.new
+      packet_b = Labrad::Protocol::Packet.new
 
       expect(packet_a).to eq(packet_b)
     end
 
     it 'is false if #to_s is unequal' do
-      packet_a = LabRAD::Protocol::Packet.new
-      packet_b = LabRAD::Protocol::Packet.new(context: 100)
+      packet_a = Labrad::Protocol::Packet.new
+      packet_b = Labrad::Protocol::Packet.new(context: 100)
 
       expect(packet_a).not_to eq(packet_b)
     end
@@ -158,15 +158,15 @@ describe LabRAD::Protocol::Packet do
       @request = 1
       @target = 1
       @records = []
-      3.times { @records << LabRAD::Protocol::Record.new }
+      3.times { @records << Labrad::Protocol::Record.new }
 
-      data = LabRAD::Protocol::Data.new('(ww) i w s')
+      data = Labrad::Protocol::Data.new('(ww) i w s')
       string = data.pack(@context,
                          @request,
                          @target,
                          @records.map(&:to_s).join)
 
-      @packet = LabRAD::Protocol::Packet.from_s(string)
+      @packet = Labrad::Protocol::Packet.from_s(string)
     end
 
     it 'unpacks context' do

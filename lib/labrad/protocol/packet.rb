@@ -3,7 +3,7 @@
 require 'labrad/protocol/data'
 require 'labrad/protocol/record'
 
-module LabRAD
+module Labrad
   module Protocol
     class Packet
       PACKET_DATA = Protocol::Data.new('(ww) i w s')

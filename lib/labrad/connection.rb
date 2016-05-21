@@ -7,7 +7,7 @@ require 'labrad/protocol/data'
 require 'labrad/protocol/packet'
 require 'labrad/manager'
 
-module LabRAD
+module Labrad
   class Connection
     HEADER_SIZE = 20
     HEADER_DATA = Protocol::Data.new('(ww) i w w')

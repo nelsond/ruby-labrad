@@ -2,7 +2,7 @@
 
 require 'labrad/protocol/data'
 
-module LabRAD
+module Labrad
   module Protocol
     module Unpacker
       def unpack_b(_element, stream)
@@ -27,7 +27,7 @@ module LabRAD
       end
 
       def unpack_c(_element, stream)
-        real, imag = LabRAD::Protocol::Data.new('vv').unpack(stream)
+        real, imag = Labrad::Protocol::Data.new('vv').unpack(stream)
         Complex(real, imag)
       end
 
@@ -39,7 +39,7 @@ module LabRAD
       end
 
       def unpack_e(_element, stream)
-        LabRAD::Protocol::Data.new('is').unpack(stream)
+        Labrad::Protocol::Data.new('is').unpack(stream)
       end
 
       def unpack__(_element, _stream)
@@ -50,16 +50,16 @@ module LabRAD
         length = unpack_i('i', stream)
 
         pattern = element[1..-1]
-        data = LabRAD::Protocol::Data.new(pattern * length)
+        data = Labrad::Protocol::Data.new(pattern * length)
 
         data.unpack(stream)
       end
 
       def unpack_narray(element, stream)
-        ldata = LabRAD::Protocol::Data.new('i' * element[1].to_i)
+        ldata = Labrad::Protocol::Data.new('i' * element[1].to_i)
         lengths = ldata.unpack(stream)
 
-        data = LabRAD::Protocol::Data.new(element[-1] * lengths.inject(:*))
+        data = Labrad::Protocol::Data.new(element[-1] * lengths.inject(:*))
         array = data.unpack(stream)
 
         reshape_array(array, lengths)
@@ -67,7 +67,7 @@ module LabRAD
 
       def unpack_cluster(elements, stream)
         pattern = elements[1..-2]
-        data = LabRAD::Protocol::Data.new(pattern)
+        data = Labrad::Protocol::Data.new(pattern)
 
         data.unpack(stream)
       end

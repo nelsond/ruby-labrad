@@ -1,6 +1,6 @@
 require 'timeout'
 
-module LabRAD
+module Labrad
   class PackError < ArgumentError
   end
 

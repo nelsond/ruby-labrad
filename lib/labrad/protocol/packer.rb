@@ -2,7 +2,7 @@
 
 require 'labrad/protocol/data'
 
-module LabRAD
+module Labrad
   module Protocol
     module Packer
       def pack_b(_element, value)

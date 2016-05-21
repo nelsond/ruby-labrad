@@ -4,7 +4,7 @@ require 'labrad/protocol/packer'
 require 'labrad/protocol/unpacker'
 require 'labrad/errors'
 
-module LabRAD
+module Labrad
   module Protocol
     class Data
       include Packer
@@ -26,7 +26,7 @@ module LabRAD
         end.join
 
       rescue
-        raise LabRAD::PackError,
+        raise Labrad::PackError,
               "Can't pack '#{@pattern}' using #{values.inspect}"
       end
 
@@ -41,7 +41,7 @@ module LabRAD
         end
 
       rescue
-        raise LabRAD::UnpackError,
+        raise Labrad::UnpackError,
               "Can't unpack '#{stream.inspect}' using '#{@pattern}'"
       end
 

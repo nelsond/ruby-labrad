@@ -26,7 +26,7 @@ class MockManager
     stream = StringIO.new(string)
 
     packets = []
-    packets << LabRAD::Protocol::Packet.from_s(stream) until stream.eof?
+    packets << Labrad::Protocol::Packet.from_s(stream) until stream.eof?
 
     packets
   end

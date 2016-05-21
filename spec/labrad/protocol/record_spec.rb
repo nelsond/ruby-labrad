@@ -1,9 +1,9 @@
 require 'labrad/protocol/record'
 require 'labrad/protocol/data'
 
-describe LabRAD::Protocol::Record do
+describe Labrad::Protocol::Record do
   before(:each) do
-    @record = LabRAD::Protocol::Record.new
+    @record = Labrad::Protocol::Record.new
   end
 
   describe '#initialize' do
@@ -20,32 +20,32 @@ describe LabRAD::Protocol::Record do
     end
 
     it 'uses hash argument for setting' do
-      record = LabRAD::Protocol::Record.new(setting: 1)
+      record = Labrad::Protocol::Record.new(setting: 1)
       expect(record.setting).to eq(1)
     end
 
     it 'uses hash argument for type' do
-      record = LabRAD::Protocol::Record.new(type: 'i')
+      record = Labrad::Protocol::Record.new(type: 'i')
       expect(record.type).to eq('i')
     end
 
     it 'uses data argument for data' do
-      record = LabRAD::Protocol::Record.new(data: 'Hello World!')
+      record = Labrad::Protocol::Record.new(data: 'Hello World!')
       expect(record.data).to eq('Hello World!')
     end
   end
 
   describe '#==' do
     it 'is true if #to_s is equal' do
-      record_a = LabRAD::Protocol::Record.new
-      record_b = LabRAD::Protocol::Record.new
+      record_a = Labrad::Protocol::Record.new
+      record_b = Labrad::Protocol::Record.new
 
       expect(record_a).to eq(record_b)
     end
 
     it 'is false if #to_s is unequal' do
-      record_a = LabRAD::Protocol::Record.new
-      record_b = LabRAD::Protocol::Record.new(type: 's', data: 'Hello World!')
+      record_a = Labrad::Protocol::Record.new
+      record_b = Labrad::Protocol::Record.new(type: 's', data: 'Hello World!')
 
       expect(record_a).not_to eq(record_b)
     end
@@ -56,8 +56,8 @@ describe LabRAD::Protocol::Record do
       @record.type = 'i'
       @record.data = 1024
 
-      rdata = LabRAD::Protocol::Data.new('w s s')
-      tdata = LabRAD::Protocol::Data.new('i')
+      rdata = Labrad::Protocol::Data.new('w s s')
+      tdata = Labrad::Protocol::Data.new('i')
       expected_result = rdata.pack(@record.setting,
                                    @record.type,
                                    tdata.pack(1024))
@@ -72,13 +72,13 @@ describe LabRAD::Protocol::Record do
       @type = 'v'
       @data = 1.23
 
-      rdata = LabRAD::Protocol::Data.new('w s s')
-      tdata = LabRAD::Protocol::Data.new(@type)
+      rdata = Labrad::Protocol::Data.new('w s s')
+      tdata = Labrad::Protocol::Data.new(@type)
 
       string = rdata.pack(@setting,
                           @type,
                           tdata.pack(@data))
-      @record = LabRAD::Protocol::Record.from_s(string)
+      @record = Labrad::Protocol::Record.from_s(string)
     end
 
     it 'unpacks setting' do
@@ -96,16 +96,16 @@ describe LabRAD::Protocol::Record do
 
   describe '.many_from_s' do
     it 'unpacks multiple records' do
-      rdata = LabRAD::Protocol::Data.new('w s s')
-      tdata = LabRAD::Protocol::Data.new('v')
+      rdata = Labrad::Protocol::Data.new('w s s')
+      tdata = Labrad::Protocol::Data.new('v')
 
       string = Array.new(3) do
         rdata.pack(2, 'v', tdata.pack(1.23))
       end.join
 
-      records = LabRAD::Protocol::Record.many_from_s(string)
+      records = Labrad::Protocol::Record.many_from_s(string)
 
-      expect(records.first).to be_a(LabRAD::Protocol::Record)
+      expect(records.first).to be_a(Labrad::Protocol::Record)
       expect(records.length).to eq(3)
     end
   end

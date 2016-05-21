@@ -5,7 +5,7 @@ require 'labrad/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'ruby-labrad'
-  spec.version       = LabRAD::VERSION
+  spec.version       = Labrad::VERSION
   spec.authors       = ['Nelson Darkwah Oppong']
   spec.email         = ['n@darkwahoppong.com']
 

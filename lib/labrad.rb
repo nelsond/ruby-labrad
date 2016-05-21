@@ -1,6 +1,7 @@
+# rubocop:disable Style/Documentation
+
 require 'labrad/version'
 
-# LabRAD module
-module LabRAD
+module Labrad
   # ...
 end
